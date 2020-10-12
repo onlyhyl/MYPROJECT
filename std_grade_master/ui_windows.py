@@ -1,6 +1,7 @@
 #-*- coding:utf8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QTableWidgetItem
 # from PyQt5.QtWidgets import QMainWindow
 # from PyQt5.QtWidgets import QApplication
 from functools import partial
@@ -10,8 +11,9 @@ from functools import partial
 
 
 class Ui_MainWindow(object):
-    def __init__(self, stnames):
+    def __init__(self, stnames, stfile):
         self.stnames = stnames
+        self.wintitle = stfile.split('.')[0]
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -28,29 +30,33 @@ class Ui_MainWindow(object):
         # self.radioButton = QtWidgets.QRadioButton(self.groupBox)
         # self.radioButton.setGeometry(QtCore.QRect(10, 20, 89, 16))
         # self.radioButton.setObjectName("radioButton")
-        tmp = 0
         for i in range(len(self.stnames)):
             exec('self.radioButton_{} = QtWidgets.QRadioButton(self.groupBox)'.format(i))
             if 20 + (i*20) < 540:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 10, 20 + (i*20), 90, 15))
             else:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i*20)-520, 90, 15))
-                tmp = i
             exec('self.radioButton_{}.setObjectName("radioButton_{}")'.format(i, self.stnames[i]))
             # 点击后的反应
             exec('self.radioButton_{}.clicked.connect(partial(self.slot, "{}"))'.format(i, self.stnames[i]))
 
         # 选择框模块--跳转到一直进步页面
         self.upButton = QtWidgets.QPushButton(self.centralwidget)
-        self.upButton.setGeometry(QtCore.QRect(300, 530, 90, 25))
+        self.upButton.setGeometry(QtCore.QRect(300, 500, 90, 25))
         self.upButton.setObjectName("upButton")
         self.downButton = QtWidgets.QPushButton(self.centralwidget)
-        self.downButton.setGeometry(QtCore.QRect(500, 530, 90, 25))
+        self.downButton.setGeometry(QtCore.QRect(500, 500, 90, 25))
         self.downButton.setObjectName("downButton")
+        self.noupdownButton = QtWidgets.QPushButton(self.centralwidget)
+        self.noupdownButton.setGeometry(QtCore.QRect(700, 500, 90, 25))
+        self.noupdownButton.setObjectName("noupdownButton")
+        self.evalButton = QtWidgets.QPushButton(self.centralwidget)
+        self.evalButton.setGeometry(QtCore.QRect(300, 530, 90, 25))
+        self.evalButton.setObjectName("evalButton")
 
         # 图像模块
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.graphicsView.setGeometry(QtCore.QRect(250, 90, 600, 400))
+        self.graphicsView.setGeometry(QtCore.QRect(250, 80, 600, 400))
         self.graphicsView.setObjectName("graphicsView")
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -68,13 +74,15 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.groupBox.setTitle(_translate("MainWindow", "GroupBox"))
+        MainWindow.setWindowTitle(_translate("MainWindow", self.wintitle))
+        self.groupBox.setTitle(_translate("MainWindow", "所有学生"))
         for i in range(len(self.stnames)):
             exec('self.radioButton_{}.setText(_translate("MainWindow", "{}"))'.format(i, self.stnames[i]))
         # self.radioButton.setText(_translate("MainWindow", "毕佳琪"))
         self.upButton.setText(_translate("MainWindow", "一直进步"))
         self.downButton.setText(_translate("MainWindow", "一直退步"))
+        self.noupdownButton.setText(_translate("MainWindow", "波动"))
+        self.evalButton.setText(_translate("MainWindow", "平均分"))
 
 
 class Ui_Form_up(object):
@@ -88,16 +96,14 @@ class Ui_Form_up(object):
         self.groupBox.setGeometry(QtCore.QRect(20, 30, 180, 440))
         self.groupBox.setObjectName("groupBox")
 
-        tmp = 0
         for i in range(len(self.upnames)):
             exec('self.radioButton_{} = QtWidgets.QRadioButton(self.groupBox)'.format(i))
             if 20 + (i * 20) < 440:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 10, 20 + (i * 20), 90,
                                                                                             15))
             else:
-                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i * 20) - 520,
+                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i * 20) - 420,
                                                                                             90, 15))
-                tmp = i
             exec('self.radioButton_{}.setObjectName("radioButton_{}")'.format(i, self.upnames[i]))
             # 点击后的反应
             exec('self.radioButton_{}.clicked.connect(partial(self.slot, "{}"))'.format(i, self.upnames[i]))
@@ -121,7 +127,7 @@ class Ui_Form_up(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.groupBox.setTitle(_translate("Form", "GroupBox"))
+        self.groupBox.setTitle(_translate("Form", "一直进步学生"))
         for i in range(len(self.upnames)):
             exec('self.radioButton_{}.setText(_translate("Form", "{}"))'.format(i, self.upnames[i]))
 
@@ -137,16 +143,14 @@ class Ui_Form_down(object):
         self.groupBox.setGeometry(QtCore.QRect(20, 30, 180, 440))
         self.groupBox.setObjectName("groupBox")
 
-        tmp = 0
         for i in range(len(self.downnames)):
             exec('self.radioButton_{} = QtWidgets.QRadioButton(self.groupBox)'.format(i))
             if 20 + (i * 20) < 440:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 10, 20 + (i * 20), 90,
                                                                                             15))
             else:
-                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i * 20) - 520,
+                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i * 20) - 420,
                                                                                             90, 15))
-                tmp = i
             exec('self.radioButton_{}.setObjectName("radioButton_{}")'.format(i, self.downnames[i]))
             # 点击后的反应
             exec('self.radioButton_{}.clicked.connect(partial(self.slot, "{}"))'.format(i, self.downnames[i]))
@@ -170,55 +174,111 @@ class Ui_Form_down(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.groupBox.setTitle(_translate("Form", "GroupBox"))
+        self.groupBox.setTitle(_translate("Form", "一直退步学生"))
         for i in range(len(self.downnames)):
             exec('self.radioButton_{}.setText(_translate("Form", "{}"))'.format(i, self.downnames[i]))
 
 
-# # 处理数据
-# data = DATA('三（2）班单科 同步学堂U1 成绩统计表.xls')
-# data.make_data() #录入所有学生的姓名成绩
-# data.paint(True) #把学生的姓名成绩做成图，并写入qt显示图用的资源文件
-# data.jinbu() #加载一直进步的名单
-# data.tuibu() #加载一直退步的名单
-# stnames = data.names
-# upnames = data.upnames
-# downnames = data.downnames
-#
-# # 把图资源.qrc转为.py加载进程序
-# stfile = data.stfile #excel表名称
-# if not os.path.exists('stpics.py'):
-#     os.system(r'pyrcc5 -o stpics.py {}/stpicsqrc.qrc'.format(stfile.split('.')[0]))
-# if os.path.exists('stpics.py'):
-#     base_path = getattr(sys, '_METPASS', os.path.dirname(os.path.abspath(__file__)))
-#     sys.path.append(base_path)
-#     import stpics
-#
-#
-# app = QApplication(sys.argv)
-#
-# # 主窗口
-# ui = Ui_MainWindow(stnames)
-# mainwindow = QtWidgets.QMainWindow()
-# ui.setupUi(mainwindow)
-# mainwindow.show()
-#
-#
-# # 进步窗口
-# class Form_up(QMainWindow, Ui_Form_up):
-#     def __init__(self):
-#         super(Form_up, self).__init__()
-#         self.setupUi(self, upnames)
-# myWin_up = Form_up()
-# ui.upButton.clicked.connect(myWin_up.show)
-#
-#
-# # 退步窗口
-# class Form_down(QMainWindow, Ui_Form_down):
-#     def __init__(self):
-#         super(Form_down, self).__init__()
-#         self.setupUi(self, downnames)
-# myWin_down = Form_down()
-# ui.downButton.clicked.connect(myWin_down.show)
-#
-# sys.exit(app.exec_())
+class Ui_Form_noupdown(object):
+
+    def setupUi(self, Form, noupdownnames):
+        self.noupdownnames = noupdownnames
+        Form.setObjectName("Form")
+        Form.resize(800, 500)
+
+        self.groupBox = QtWidgets.QGroupBox(Form)
+        # self.groupBox.setGeometry(QtCore.QRect(20, 30, 250, 440))
+        self.groupBox.setObjectName("groupBox")
+
+        for i in range(len(self.noupdownnames)):
+            exec('self.radioButton_{} = QtWidgets.QRadioButton(self.groupBox)'.format(i))
+            if 20 + (i * 20) < 440:
+                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 10, 20 + (i * 20), 90,
+                                                                                            15))
+                tmp_xloc = 10 + 90
+            elif 20 + (i * 20) < 860:
+                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i * 20) - 420,
+                                                                                            90, 15))
+                tmp_xloc = 90 + 90
+            else:
+                exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 170, 20 + (i * 20) - 840,
+                                                                                            90, 15))
+                tmp_xloc = 170 + 90
+
+            exec('self.radioButton_{}.setObjectName("radioButton_{}")'.format(i, self.noupdownnames[i]))
+            # 点击后的反应
+            exec('self.radioButton_{}.clicked.connect(partial(self.slot, "{}"))'.format(i, self.noupdownnames[i]))
+
+        self.groupBox.setGeometry(QtCore.QRect(20, 30, tmp_xloc + 5, 440))
+        # 图像模块
+        self.graphicsView = QtWidgets.QGraphicsView(Form)
+        # self.graphicsView.setGeometry(QtCore.QRect(220, 60, 550, 400))
+        self.graphicsView.setGeometry(QtCore.QRect(tmp_xloc + 50, 60, 550, 400))
+        self.graphicsView.setObjectName("graphicsView")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+
+    def slot(self, name):
+        print('noupdown check: ',name)
+        self.graphicsView.setStyleSheet("image: url(:/pic/{}.png);\n"
+                                        "border-image: url(:/pic/{}.png);".format(name, name))
+
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.groupBox.setTitle(_translate("Form", "波动学生"))
+        for i in range(len(self.noupdownnames)):
+            exec('self.radioButton_{}.setText(_translate("Form", "{}"))'.format(i, self.noupdownnames[i]))
+
+
+class Ui_Form_eval(object):
+    def setupUi(self, Form, unit_eval):
+        self.unit_eval = unit_eval
+        Form.setObjectName("Form")
+        Form.resize(500, 140)
+
+        self.tableWidget = QtWidgets.QTableWidget(Form)
+        self.tableWidget.setGeometry(QtCore.QRect(10, 20, 480, 100))
+        self.tableWidget.setObjectName("tableWidget")
+
+        self.tableWidget.setColumnCount(len(self.unit_eval)) #几列
+        self.tableWidget.setRowCount(1) #几行
+
+        # 行，通过数字标识第几行的位置
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setVerticalHeaderItem(0, item)
+        # 列，通过数字标识第几列的位置
+        for i in range(len(self.unit_eval)):
+            # 行列表头字段位置
+            item = QtWidgets.QTableWidgetItem()
+            self.tableWidget.setHorizontalHeaderItem(i, item)
+            # 行列值位置
+            item = QtWidgets.QTableWidgetItem()
+            self.tableWidget.setItem(0, i, item)
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        # 行，表头名称
+        item = self.tableWidget.verticalHeaderItem(0)
+        item.setText(_translate("Form", "平均分"))
+        # 列，表头名称
+        units = [unit for unit in self.unit_eval]
+        for i in range(len(self.unit_eval)):
+            unit = units[i]
+            item = self.tableWidget.horizontalHeaderItem(i)
+            item.setText(_translate("Form", unit))
+            # # (0, {})第一行第n列的值
+            item = self.tableWidget.item(0, i)
+            item.setText(_translate("Form", str(self.unit_eval.get(unit, 0))))
+
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)

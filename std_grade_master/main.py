@@ -1,4 +1,4 @@
-#-*- coding:utf8 -*-
+# -*- coding:utf8 -*-
 
 import os
 import sys
@@ -7,8 +7,9 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtWidgets
 from data import DATA
-from ui_windows import Ui_MainWindow, Ui_Form_up, Ui_Form_down
+from ui_windows import Ui_MainWindow, Ui_Form_up, Ui_Form_down, Ui_Form_noupdown, Ui_Form_eval
 import importlib
+
 
 def love():
     char = 'forever'
@@ -38,6 +39,8 @@ def load(stfile, update):
     data.paint(update)  # 把学生的姓名成绩做成图，并写入qt显示图用的资源文件
     data.jinbu()  # 加载一直进步的名单
     data.tuibu()  # 加载一直退步的名单
+    data.bodong() # 加载波动的名单
+    data.eval() # 加载平均分
     # 把图资源.qrc转为.py加载进程序
     # if not os.path.exists('stpics.py'):
     # if update:
@@ -58,9 +61,9 @@ def run():
         print('-' * 50)
         print('find {} files:'.format(len(stfiles)))
         for i in range(len(stfiles)):
-            print('{}: {}'.format(i+1, stfiles[i]))
+            print('{}: {}'.format(i + 1, stfiles[i]))
             if i == len(stfiles) - 1:
-                exitnum = i+2
+                exitnum = i + 2
                 print('{}: exit'.format(exitnum))
 
         # 选择
@@ -71,8 +74,8 @@ def run():
             exit()
 
         # 读取
-        stfile = stfiles[int(zjpinput)-1]
-        if os.path.exists(stfile.replace(' ','').split('.')[0]):
+        stfile = stfiles[int(zjpinput) - 1]
+        if os.path.exists(stfile.replace(' ', '').split('.')[0]):
             update = input('update? (y/n) ')
         else:
             update = 'y'
@@ -84,6 +87,9 @@ def run():
         stnames = data.names
         upnames = data.upnames
         downnames = data.downnames
+        noupdownnames = data.noupdownnames
+        unit_eval = data.unit_eval
+
         # 在while true循环中无法读取图片资源
         # if os.path.exists('stpics.py'):
         #     base_path = getattr(sys, '_METPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -96,7 +102,7 @@ def run():
         app = QApplication(sys.argv)
 
         # 主窗口
-        ui = Ui_MainWindow(stnames)
+        ui = Ui_MainWindow(stnames, stfile)
         mainwindow = QtWidgets.QMainWindow()
         ui.setupUi(mainwindow)
         mainwindow.show()
@@ -106,6 +112,7 @@ def run():
             def __init__(self):
                 super(Form_up, self).__init__()
                 self.setupUi(self, upnames)
+
         myWin_up = Form_up()
         ui.upButton.clicked.connect(myWin_up.show)
 
@@ -114,8 +121,25 @@ def run():
             def __init__(self):
                 super(Form_down, self).__init__()
                 self.setupUi(self, downnames)
+
         myWin_down = Form_down()
         ui.downButton.clicked.connect(myWin_down.show)
+
+        # 波动窗口
+        class Form_noupdown(QMainWindow, Ui_Form_noupdown):
+            def __init__(self):
+                super(Form_noupdown, self).__init__()
+                self.setupUi(self, noupdownnames)
+        myWin_noupdown = Form_noupdown()
+        ui.noupdownButton.clicked.connect(myWin_noupdown.show)
+
+        # 平均分窗口
+        class Form_eval(QMainWindow, Ui_Form_eval):
+            def __init__(self):
+                super(Form_eval, self).__init__()
+                self.setupUi(self, unit_eval)
+        myWin_eval = Form_eval()
+        ui.evalButton.clicked.connect(myWin_eval.show)
 
         app.exec_()
         # sys.exit(app.exec_())
@@ -124,11 +148,12 @@ def run():
         print('no excel! try to set the excel to "dist". (or call hyl!!! ()\n')
         time.sleep(10)
 
+
 n = 0
 while True:
-    n += 1
-    try:
-        run()
-    except Exception as e:
-        print('error! call hyl!!!  ({})\n'.format(e))
-        time.sleep(10)
+    # n += 1
+    # try:
+    run()
+    # except Exception as e:
+    #     print('error! call hyl!!!  ({})\n'.format(e))
+    #     time.sleep(10)

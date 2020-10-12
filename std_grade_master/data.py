@@ -13,6 +13,9 @@ class DATA():
         self.name_prices = {}
         self.upnames = []
         self.downnames = []
+        self.noupdownnames = []
+        self.unit_eval = {}
+
 
     def is_number(self, s):
         try:
@@ -97,6 +100,7 @@ class DATA():
                 plt.rcParams['axes.unicode_minus'] = False
                 plt.title("{}".format(name), fontsize=15)
                 plt.plot(x, y)
+                plt.plot(x, [90 for _ in range(len(x))],color='g',linewidth=1) # 90分线
                 plt.ylim(ymax=100, ymin=0)
                 # y_major_locator = MultipleLocator(100)
                 # ax = plt.gca()
@@ -141,6 +145,20 @@ class DATA():
 
             if down == len(prices) - 1:
                 self.downnames.append(name)
+
+    def bodong(self):
+        for name in self.names:
+            if name not in self.upnames or name not in self.downnames:
+                self.noupdownnames.append(name)
+
+    def eval(self):
+        for i in range(len(self.units)):
+            unit = self.units[i]
+            tmp = 0
+            for name in self.names:
+                tmp += self.name_prices[name][i]
+            tmp_eval = tmp / len(self.names)
+            self.unit_eval[unit] = round(tmp_eval , 2)
 
 # if __name__ == '__main__':
 #     a = DATA()
