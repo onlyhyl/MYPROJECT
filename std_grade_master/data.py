@@ -1,7 +1,7 @@
 # -*- coding:utf8 -*-
 import xlrd
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import MultipleLocator
+# from matplotlib.pyplot import MultipleLocator
 import os
 
 
@@ -78,11 +78,12 @@ class DATA():
             self.names.append(name[0])
         print('end dealing!')
 
-    def paint(self):
-        print('drawing stu message...')
-        if not os.path.exists(self.stfile.split('.')[0]):
-            os.mkdir(self.stfile.split('.')[0])
-        if not os.path.exists(self.stfile.split('.')[0] + '/stpicsqrc.qrc'):
+    def paint(self, update):
+        if update:
+            print('drawing stu message...')
+            if not os.path.exists(self.stfile.split('.')[0]):
+                os.mkdir(self.stfile.split('.')[0])
+            # if not os.path.exists(self.stfile.split('.')[0] + '/stpicsqrc.qrc'): # 通过main判断是否需要更新
             f = open(self.stfile.split('.')[0] + '/stpicsqrc.qrc', 'w', encoding='utf8')
             f.write(str('<RCC>' + '\n' + '<qresource prefix="pic">' + '\n'))
             for name in self.names:
@@ -109,7 +110,7 @@ class DATA():
 
             f.write('</qresource>' + '\n' + '</RCC>')
             f.close()
-        print('end drawing!')
+            print('end drawing!')
 
     def jinbu(self):
         for name in self.names:
