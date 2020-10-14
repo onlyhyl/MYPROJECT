@@ -3,18 +3,20 @@ import xlrd
 import matplotlib.pyplot as plt
 # from matplotlib.pyplot import MultipleLocator
 import os
-
+import copy
 
 class DATA():
     def __init__(self, stfile):
-        self.stfile = stfile
-        self.units = []
-        self.names = []
-        self.name_prices = {}
-        self.upnames = []
-        self.downnames = []
-        self.noupdownnames = []
-        self.unit_eval = {}
+        self.stfile = stfile #文件名
+
+        self.names = [] #全部学生名
+        self.units = [] #测试单元
+        self.name_prices = {} #{学生:[成绩]}
+        self.upnames = [] #一直进步学生
+        self.downnames = [] #一直退步学生
+        self.noupdownnames = [] #波动学生
+        self.unit_eval = {} #单元平均分
+        self.quekaonames = [] #缺考学生
 
 
     def is_number(self, s):
@@ -70,6 +72,7 @@ class DATA():
                             if self.is_number(data[j]) or data[j] == '缺考':
                                 if data[j] != '缺考':
                                     tmp_price.append(int(data[j]))
+                                    self.quekaonames.append(name)
                                 else:
                                     tmp_price.append(0)
                             else:
@@ -100,7 +103,7 @@ class DATA():
                 plt.rcParams['axes.unicode_minus'] = False
                 plt.title("{}".format(name), fontsize=15)
                 plt.plot(x, y)
-                plt.plot(x, [90 for _ in range(len(x))],color='g',linewidth=1) # 90分线
+                plt.plot(x, [90 for _ in range(len(x))], color='g', linewidth=1)  # 90分线
                 plt.ylim(ymax=100, ymin=0)
                 # y_major_locator = MultipleLocator(100)
                 # ax = plt.gca()
@@ -153,12 +156,19 @@ class DATA():
 
     def eval(self):
         for i in range(len(self.units)):
+            names = copy.deepcopy(self.names)  # 用来判断是否有缺考，缺考则不算入平均分
             unit = self.units[i]
             tmp = 0
+            print(unit)
             for name in self.names:
-                tmp += self.name_prices[name][i]
-            tmp_eval = tmp / len(self.names)
-            self.unit_eval[unit] = round(tmp_eval , 2)
+                price = self.name_prices[name][i]
+                if price == 0 and name in self.quekaonames:
+                    names.remove(name)
+                else:
+                    tmp += price
+                print(name, price, tmp, len(names), len(self.names))
+            tmp_eval = tmp / len(names)
+            self.unit_eval[unit] = round(tmp_eval, 2)
 
 # if __name__ == '__main__':
 #     a = DATA()
