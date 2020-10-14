@@ -12,6 +12,15 @@ import importlib
 
 
 def love():
+    # kongge = ''
+    # for _ in range(100):
+    #     print(kongge + '-')
+    #     time.sleep(0.2)
+    #     kongge += ' '
+    #     if _ == 99:
+    #         for i in range(100, 0, -1):
+    #             print(kongge[:i] + '-')
+    #             time.sleep(0.2)
     char = 'forever'
     allChar = []
     for y in range(12, -12, -1):
@@ -25,8 +34,9 @@ def love():
                 lst_con += ' '
         lst.append(lst_con)
         allChar += lst
+
+    allChar = allChar[:4] + allChar[8:10] + [allChar[3]] + allChar[12:]
     print('\n'.join(allChar))
-    time.sleep(5)
 
 
 def load(stfile, update):
@@ -69,8 +79,9 @@ def run():
         # 选择
         zjpinput = input('choose file to check: ')
         if int(zjpinput) == exitnum:
-            print('see u! \n')
             love()
+            print('see u!')
+            time.sleep(8)
             exit()
 
         # 读取
@@ -95,6 +106,8 @@ def run():
         #     base_path = getattr(sys, '_METPASS', os.path.dirname(os.path.abspath(__file__)))
         #     sys.path.append(base_path)
         #     import stpics
+        base_path = getattr(sys, '_METPASS', os.path.dirname(os.path.abspath(__file__)))
+        sys.path.append(base_path)
         module_name = 'stpics{}'.format(n)  # 模块名的字符串
         importlib.import_module(module_name)  # 导入的就是需要导入的那个metaclass
         os.remove(module_name + '.py')
@@ -151,9 +164,9 @@ def run():
 
 n = 0
 while True:
-    # n += 1
-    # try:
-    run()
-    # except Exception as e:
-    #     print('error! call hyl!!!  ({})\n'.format(e))
-    #     time.sleep(10)
+    n += 1
+    try:
+        run()
+    except Exception as e:
+        print('error! call hyl!!!  ({})\n'.format(e))
+        time.sleep(10)
