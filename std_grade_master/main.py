@@ -158,7 +158,9 @@ def run():
         # sys.exit(app.exec_())
 
     else:
-        print('no excel! try to set the excel to "dist". (or call hyl!!! ()\n')
+        print('！' * 50)
+        print('no excel! try to set the excel to "dist". (or call hyl!!!) \n')
+        print('！' * 50)
         time.sleep(10)
 
 
