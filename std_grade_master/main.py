@@ -77,7 +77,16 @@ def run():
                 print('{}: exit'.format(exitnum))
 
         # 选择
-        zjpinput = input('choose file to check: ')
+        while True:
+            try:
+                zjpinput = input('choose file to check: ')
+                if int(zjpinput) not in list(range(1,len(stfiles)+2)):
+                    raise Exception('choose error! please choose again')
+                break
+            except:
+                print('*** choose error! please choose again ***')
+                continue
+
         if int(zjpinput) == exitnum:
             love()
             print('see u!')
@@ -170,5 +179,5 @@ while True:
     try:
         run()
     except Exception as e:
-        print('error! call hyl!!!  ({})\n'.format(e))
+        print('*** error! call hyl!!!  ({}) ***\n'.format(e))
         time.sleep(10)

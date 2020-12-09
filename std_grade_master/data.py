@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 # from matplotlib.pyplot import MultipleLocator
 import os
 import copy
+import unicodedata
 
 class DATA():
     def __init__(self, stfile):
@@ -12,6 +13,7 @@ class DATA():
         self.names = [] #全部学生名
         self.units = [] #测试单元
         self.name_prices = {} #{学生:[成绩]}
+        self.upnames = [] #一直进步学生
         self.upnames = [] #一直进步学生
         self.downnames = [] #一直退步学生
         self.noupdownnames = [] #波动学生
@@ -27,7 +29,6 @@ class DATA():
             pass
 
         try:
-            import unicodedata
             unicodedata.numeric(s)
             return True
         except (TypeError, ValueError):
@@ -51,6 +52,7 @@ class DATA():
         table = data.sheets()[0]
         nrows = table.nrows
 
+        quekao = ['缺考', '请假', '缺勤']
         name_to_paixu = {}
         for n in range(2, nrows):
             data = table.row_values(n, start_colx=0, end_colx=None)
@@ -63,14 +65,14 @@ class DATA():
                         break
             for i in range(len(data)):
                 if i != 0:
-                    if self.is_number(data[i - 1]) and self.is_Chinese(data[i]) and data[i] != '缺考':
+                    if self.is_number(data[i - 1]) and self.is_Chinese(data[i]) and data[i] not in quekao:
                         tmp_price = []
                         num = int(data[i - 1])
                         name = str(num) + ' ' + data[i]
                         name_to_paixu[name] = num
                         for j in range(i + 1, len(data)):
-                            if self.is_number(data[j]) or data[j] == '缺考':
-                                if data[j] != '缺考':
+                            if self.is_number(data[j]) or data[j] in quekao:
+                                if data[j] not in quekao:
                                     tmp_price.append(int(data[j]))
                                     self.quekaonames.append(name)
                                 else:
@@ -159,14 +161,12 @@ class DATA():
             names = copy.deepcopy(self.names)  # 用来判断是否有缺考，缺考则不算入平均分
             unit = self.units[i]
             tmp = 0
-            print(unit)
             for name in self.names:
                 price = self.name_prices[name][i]
                 if price == 0 and name in self.quekaonames:
                     names.remove(name)
                 else:
                     tmp += price
-                print(name, price, tmp, len(names), len(self.names))
             tmp_eval = tmp / len(names)
             self.unit_eval[unit] = round(tmp_eval, 2)
 

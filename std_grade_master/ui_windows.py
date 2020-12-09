@@ -8,7 +8,7 @@ from functools import partial
 # from data import DATA
 # import os
 # import sys
-
+from PyQt5.QtGui import QPalette, QBrush, QPixmap, QColor, QFont
 
 class Ui_MainWindow(object):
     def __init__(self, stnames, stfile):
@@ -18,12 +18,24 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(900, 600)
+
+        # 设置背景
+        palette = QPalette()
+        palette.setBrush(QPalette.Background, QBrush(QPixmap("we.png")))
+        MainWindow.setPalette(palette)
+        # MainWindow.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        # MainWindow.setWindowOpacity(0.3)
+        # MainWindow.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
         # 装选择框的盒子模块
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(20, 30, 180, 540))
+        # self.groupBox.setFont(QFont("宋体",9,QFont.Bold))
+        self.groupBox.setFont(QFont("微软雅黑", 9))
         self.groupBox.setObjectName("groupBox")
 
         # 选择框模块--各个学生
@@ -34,8 +46,10 @@ class Ui_MainWindow(object):
             exec('self.radioButton_{} = QtWidgets.QRadioButton(self.groupBox)'.format(i))
             if 20 + (i*20) < 540:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 10, 20 + (i*20), 90, 15))
+                # exec('self.radioButton_{}.setFont(QFont("微软雅黑",9))'.format(i, 10, 20 + (i*20), 90, 15))
             else:
                 exec('self.radioButton_{}.setGeometry(QtCore.QRect({}, {}, {}, {}))'.format(i, 90, 20 + (i*20)-520, 90, 15))
+                # exec('self.radioButton_{}.setFont(QFont("微软雅黑",9))'.format(i, 90, 20 + (i*20)-520, 90, 15))
             exec('self.radioButton_{}.setObjectName("radioButton_{}")'.format(i, self.stnames[i]))
             # 点击后的反应
             exec('self.radioButton_{}.clicked.connect(partial(self.slot, "{}"))'.format(i, self.stnames[i]))
@@ -78,7 +92,7 @@ class Ui_MainWindow(object):
         self.groupBox.setTitle(_translate("MainWindow", "所有学生"))
         for i in range(len(self.stnames)):
             exec('self.radioButton_{}.setText(_translate("MainWindow", "{}"))'.format(i, self.stnames[i]))
-        # self.radioButton.setText(_translate("MainWindow", "毕佳琪"))
+            # self.radioButton.setText(_translate("MainWindow", "毕佳琪"))
         self.upButton.setText(_translate("MainWindow", "一直进步"))
         self.downButton.setText(_translate("MainWindow", "一直退步"))
         self.noupdownButton.setText(_translate("MainWindow", "波动"))
